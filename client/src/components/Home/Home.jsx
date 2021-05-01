@@ -52,7 +52,7 @@ const Home = () => {
   const submitHandler = e => {
     e.preventDefault();
 
-    socket.emit("create-room", { room });
+    socket.emit("create-room", room);
     setRoom("");
   };
 
