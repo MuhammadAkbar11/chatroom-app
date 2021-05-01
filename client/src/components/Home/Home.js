@@ -28,7 +28,7 @@ const Home = () => {
   useEffect(() => {}, []);
 
   return (
-    <Container fluid>
+    <>
       <h1>Home</h1>
       <p>{JSON.stringify(user)}</p>
       <Button onClick={setAsTofu}>Set as Tofu</Button>
@@ -40,7 +40,7 @@ const Home = () => {
           <Button>Go to chat</Button>
         </LinkContainer>
       </div>
-    </Container>
+    </>
   );
 };
 
