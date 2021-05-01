@@ -30,8 +30,13 @@ const io = new SocketServer(server, {
 io.on("connection", socket => {
   console.log("a user connected", socket.id);
 
+  RoomModel.find()
+    .then(result => {
+      socket.emit("output-rooms", result);
+    })
+    .catch(err => console.log(err));
+
   socket.on("create-room", async newRoom => {
-    // console.log(room, "server");
     try {
       const room = new RoomModel({ name: newRoom });
       const result = await room.save();

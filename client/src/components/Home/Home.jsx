@@ -43,14 +43,16 @@ const Home = () => {
   }, [ENDPT]);
 
   useEffect(() => {
-    socket.on("room-created", newRoom => {
-      setRooms(prevRooms => [...prevRooms, newRoom]);
+    socket.on("output-rooms", data => {
+      setRooms(data);
     });
   }, []);
 
   useEffect(() => {
-    console.log(rooms);
-  }, [rooms]);
+    socket.on("room-created", newRoom => {
+      setRooms(prevRooms => [...prevRooms, newRoom]);
+    });
+  }, []);
 
   const submitHandler = e => {
     e.preventDefault();
