@@ -13,7 +13,6 @@ $body-bg: #202020;
 // }
 
 .wrapper {
-  min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-areas: "header" "main" "footer";
@@ -33,6 +32,10 @@ $body-bg: #202020;
     margin-top: auto;
     grid-area: footer;
   }
+}
+
+.min-h-100vh {
+  min-height: 100vh;
 }
 
 .h-100vh {
