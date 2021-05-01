@@ -35,7 +35,7 @@ io.on("connection", socket => {
     try {
       const room = new RoomModel({ name: newRoom });
       const result = await room.save();
-      io.emit("room-creted", result);
+      io.emit("room-created", result);
     } catch (error) {
       console.log(error);
     }

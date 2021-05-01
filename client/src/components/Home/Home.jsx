@@ -10,15 +10,7 @@ const Home = () => {
   const ENDPT = "localhost:5000";
   const { user, setUser } = React.useContext(UserContext);
   const [room, setRoom] = useState("");
-
-  const [rooms, setRooms] = useState([
-    {
-      name: "room1",
-      _id: "room1",
-    },
-    { name: "room2", _id: "room2" },
-    { name: "room3", _id: "room3" },
-  ]);
+  const [rooms, setRooms] = useState([]);
 
   const setAsTofu = () => {
     const tofu = {
@@ -49,6 +41,16 @@ const Home = () => {
       socket.off();
     };
   }, [ENDPT]);
+
+  useEffect(() => {
+    socket.on("room-created", newRoom => {
+      setRooms(prevRooms => [...prevRooms, newRoom]);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(rooms);
+  }, [rooms]);
 
   const submitHandler = e => {
     e.preventDefault();
