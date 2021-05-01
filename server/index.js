@@ -45,6 +45,12 @@ io.on("connection", socket => {
 
     console.log("Join success", user);
   });
+
+  socket.on("send-message", (message, callback) => {
+    console.log(message);
+
+    callback && callback();
+  });
 });
 
 server.listen(PORT, () => {

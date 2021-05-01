@@ -8,8 +8,31 @@ $body-bg: #202020;
 @import "~bootstrap/scss/bootstrap";
 @import "~bootswatch/dist/cyborg/bootswatch";
 
-main {
+// main {
+//   height: ;
+// }
+
+.wrapper {
   min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: "header" "main" "footer";
+
+  .header {
+    grid-area: header;
+  }
+  main {
+    grid-area: main;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    margin-top: auto;
+    grid-area: footer;
+  }
 }
 
 .h-100vh {
@@ -17,3 +40,4 @@ main {
 }
 
 @import "./styles/home";
+@import "./styles/chat";

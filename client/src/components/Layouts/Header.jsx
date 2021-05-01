@@ -4,13 +4,15 @@ import { LinkContainer } from "react-router-bootstrap";
 
 const Header = () => {
   return (
-    <header>
+    <header className="header">
       <Navbar className="py-4" variant="dark" expand="lg" collapseOnSelect>
-        <Container>
-          <LinkContainer to="/">
+        <Container fluid>
+          <LinkContainer to="/" className="border">
             <Navbar.Brand>
               {" "}
-              <span className="text-primary text-uppercase">BaeRoom</span>{" "}
+              <span className="text-primary text-uppercase">
+                Bae ChatRoom
+              </span>{" "}
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

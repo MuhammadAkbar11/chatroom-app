@@ -11,15 +11,20 @@ function App() {
   // const userContext  =UserContext
   return (
     <>
-      <Header />
-      <main className="py-3 bg-black-50">
-        <UserContext.Provider value={{ user, setUser }}>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/chat/:room_id/:room_name" component={Chat} />
-          </Switch>
-        </UserContext.Provider>
-      </main>
+      <div className="wrapper">
+        <Header />
+        <main className="py-3 bg-black-50">
+          <UserContext.Provider value={{ user, setUser }}>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/chat/:room_id/:room_name" component={Chat} />
+            </Switch>
+          </UserContext.Provider>
+        </main>
+        <footer className="footer">
+          <h6>Footer</h6>
+        </footer>
+      </div>
     </>
   );
 }

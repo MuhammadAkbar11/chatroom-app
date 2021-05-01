@@ -58,8 +58,8 @@ const Home = () => {
   };
 
   return (
-    <Container className=" home-container ">
-      <Row className="  h-100 align-items-stretch  ">
+    <Container className=" home-container px-2 px-md-4 h-100 " fluid>
+      <Row className="  h-100 align-items-stretch ">
         <Col xs={12} md={6}>
           <Card className=" border-0 shadow-sm px-3 pb-3 pt-3  ">
             <Row>
