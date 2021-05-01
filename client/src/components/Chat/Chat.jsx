@@ -6,11 +6,13 @@ import { UserContext } from "../../context/UserContext";
 
 import { io } from "socket.io-client";
 import { ENDPOINT } from "../../constants/room";
+import Messages from "./Messages";
 
 let socket;
 
 const Chat = () => {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
   const { user, setUser } = React.useContext(UserContext);
   let { room_id, room_name } = useParams();
 
@@ -25,6 +27,12 @@ const Chat = () => {
     };
   }, [ENDPOINT]);
 
+  useEffect(() => {
+    socket.on("message", msg => {
+      setMessages(prevState => [...prevState, msg]);
+    });
+  }, [ENDPOINT]);
+
   const sendMessage = event => {
     event.preventDefault();
     if (message) {
@@ -33,6 +41,8 @@ const Chat = () => {
       socket.emit("send-message", { message, room_id }, () => setMessage(""));
     }
   };
+
+  console.log(messages);
 
   return (
     <Container fluid className="pr-2 pr-md-4 chat-container h-100   ">
@@ -58,7 +68,7 @@ const Chat = () => {
         </Col>
         <Col md={8} className="chat-box px-0">
           <div></div>
-          <div></div>
+          <Messages messages={messages} />
           <div className="chat-form py-2 px-2">
             <Form onSubmit={sendMessage}>
               <Form.Control
