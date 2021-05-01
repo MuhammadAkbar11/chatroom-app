@@ -23,9 +23,9 @@ const io = new SocketServer(server, {
 });
 
 io.on("connection", socket => {
-  console.log("a user connected");
+  console.log("a user connected", socket.id);
 
-  socket.on("create-room", ({ room }) => {
+  socket.on("create-room", room => {
     console.log(room, "server");
   });
 });
