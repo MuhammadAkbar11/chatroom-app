@@ -1,7 +1,19 @@
-@import "~bootswatch/dist/lumen/variables";
+$theme-colors: (
+  "primary": #00e0ff,
+);
+
+$body-bg: #202020;
+
+@import "~bootswatch/dist/cyborg/variables";
 @import "~bootstrap/scss/bootstrap";
-@import "~bootswatch/dist/lumen/bootswatch";
+@import "~bootswatch/dist/cyborg/bootswatch";
 
 main {
   min-height: 100vh;
 }
+
+.h-100vh {
+  height: 100vh;
+}
+
+@import "./styles/home";
