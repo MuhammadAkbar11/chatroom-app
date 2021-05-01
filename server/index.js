@@ -4,6 +4,7 @@ import http from "http";
 import { Server as SocketServer } from "socket.io";
 import connectDB from "./configs/database.js";
 import { addUser, removeUser, getUser } from "./helper.js";
+import MessageModel from "./models/Message.js";
 import RoomModel from "./models/Room.js";
 
 dotenv.config();
@@ -36,14 +37,16 @@ io.on("connection", socket => {
     })
     .catch(err => console.log(err));
 
-  socket.on("create-room", async newRoom => {
-    try {
-      const room = new RoomModel({ name: newRoom });
-      const result = await room.save();
-      io.emit("room-created", result);
-    } catch (error) {
-      console.log(error);
-    }
+  socket.on("create-room", newRoom => {
+    const room = new RoomModel({ name: newRoom });
+    return room
+      .save()
+      .then(result => {
+        io.emit("room-created", result);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   });
 
   socket.on("join", ({ name, room_id, user_id }) => {
@@ -73,9 +76,16 @@ io.on("connection", socket => {
       text: message,
     };
 
-    console.log(msgToStore, "<==  Message");
-    io.to(room_id).emit("message", msgToStore);
-    callback && callback();
+    const msgModel = new MessageModel(msgToStore);
+
+    msgModel
+      .save()
+      .then(result => {
+        io.to(room_id).emit("message", result);
+        callback && callback();
+      })
+      .catch(err => console.log(err));
+
     socket.on("disconnect", () => {
       const user = removeUser(socket.id);
     });
