@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { Server as SocketServer } from "socket.io";
 import http from "http";
-import { addUser } from "./helper.js";
+import { addUser, removeUser, getUser } from "./helper.js";
 
 dotenv.config();
 
@@ -38,6 +38,8 @@ io.on("connection", socket => {
       user_id,
     });
 
+    socket.join(room_id);
+
     if (error) {
       console.log("error :", error);
       return;
@@ -46,10 +48,21 @@ io.on("connection", socket => {
     console.log("Join success", user);
   });
 
-  socket.on("send-message", (message, callback) => {
-    console.log(message);
+  socket.on("send-message", ({ message, room_id }, callback) => {
+    const user = getUser(socket.id);
+    const msgToStore = {
+      name: user.name,
+      user_id: user.user_id,
+      room_id,
+      text: message,
+    };
 
+    console.log(msgToStore, "<==  Message");
+    io.to(room_id).emit("message", msgToStore);
     callback && callback();
+    socket.on("disconnect", () => {
+      const user = removeUser(socket.id);
+    });
   });
 });
 

@@ -21,3 +21,6 @@ export const removeUser = socket_id => {
     return users.splice(index, 1);
   }
 };
+
+export const getUser = socket_id =>
+  users.find(user => user.socket_id === socket_id);
