@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 const server = http.createServer(app);
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.status(200).json({
     status: true,
     message: "welcome to Bae Chatroom API",
@@ -24,6 +24,10 @@ const io = new SocketServer(server, {
 
 io.on("connection", socket => {
   console.log("a user connected");
+
+  socket.on("create-room", ({ room }) => {
+    console.log(room, "server");
+  });
 });
 
 server.listen(PORT, () => {

@@ -3,8 +3,12 @@ import { Button, Card, Container, Row, Col, Form } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { UserContext } from "../../context/UserContext";
 import RoomList from "./RoomList";
+import { io } from "socket.io-client";
+
+let socket;
 
 const Home = () => {
+  const ENDPT = "localhost:5000";
   const { user, setUser } = React.useContext(UserContext);
   const [room, setRoom] = useState("");
 
@@ -36,10 +40,20 @@ const Home = () => {
     setUser(nezha);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    socket = io(ENDPT);
+
+    return () => {
+      socket.on("disconnect");
+      socket.off();
+    };
+  }, [ENDPT]);
 
   const submitHandler = e => {
     e.preventDefault();
+
+    socket.emit("create-room", { room });
+    setRoom("");
   };
 
   return (
@@ -48,7 +62,7 @@ const Home = () => {
         <Col xs={12} md={6}>
           <Card className=" border-0 shadow-sm px-3 pb-3 pt-3  ">
             <Row>
-              <Col md={7} className="mx-auto">
+              <Col lg={7} className="mx-auto">
                 <Form onSubmit={submitHandler}>
                   <Card.Body className="p-3 ">
                     <div className="my-4  text-center">
@@ -81,10 +95,10 @@ const Home = () => {
                     </Form.Group>
                   </Card.Body>
                   <Card.Footer className="d-flex justify-content-around bg-transparent border-0">
-                    <a href="#" onClick={setAsTofu}>
+                    <a href="/#" onClick={setAsTofu}>
                       Set As Tofu
                     </a>
-                    <a href="#" onClick={setAsNezha}>
+                    <a href="/#" onClick={setAsNezha}>
                       Set As Nezha
                     </a>
                   </Card.Footer>
