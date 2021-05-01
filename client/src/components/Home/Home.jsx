@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Container, Row, Col, Form } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { UserContext } from "../../context/UserContext";
 import RoomList from "./RoomList";
 import { io } from "socket.io-client";
@@ -23,6 +22,7 @@ const Home = () => {
 
   const setAsTofu = () => {
     const tofu = {
+      id: 1,
       name: "Tofu",
       email: "tofu.1998@gmail.com",
       password: "1234",
@@ -32,6 +32,7 @@ const Home = () => {
 
   const setAsNezha = () => {
     const nezha = {
+      id: 2,
       name: "Nezha",
       email: "nezha.1998@gmail.com",
       password: "1234",

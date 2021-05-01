@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { Server as SocketServer } from "socket.io";
 import http from "http";
+import { addUser } from "./helper.js";
 
 dotenv.config();
 
@@ -27,6 +28,22 @@ io.on("connection", socket => {
 
   socket.on("create-room", room => {
     console.log(room, "server");
+  });
+
+  socket.on("join", ({ name, room_id, user_id }) => {
+    const { error, user } = addUser({
+      socket_id: socket.id,
+      name,
+      room_id,
+      user_id,
+    });
+
+    if (error) {
+      console.log("error :", error);
+      return;
+    }
+
+    console.log("Join success", user);
   });
 });
 
