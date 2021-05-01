@@ -1,12 +1,15 @@
 import dotenv from "dotenv";
 import express from "express";
-import { Server as SocketServer } from "socket.io";
 import http from "http";
+import { Server as SocketServer } from "socket.io";
+import connectDB from "./configs/database.js";
 import { addUser, removeUser, getUser } from "./helper.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
+
+connectDB();
 
 const app = express();
 const server = http.createServer(app);
