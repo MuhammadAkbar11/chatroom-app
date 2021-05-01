@@ -4,6 +4,7 @@ import http from "http";
 import { Server as SocketServer } from "socket.io";
 import connectDB from "./configs/database.js";
 import { addUser, removeUser, getUser } from "./helper.js";
+import RoomModel from "./models/Room.js";
 
 dotenv.config();
 
@@ -29,8 +30,15 @@ const io = new SocketServer(server, {
 io.on("connection", socket => {
   console.log("a user connected", socket.id);
 
-  socket.on("create-room", room => {
-    console.log(room, "server");
+  socket.on("create-room", async newRoom => {
+    // console.log(room, "server");
+    try {
+      const room = new RoomModel({ name: newRoom });
+      const result = await room.save();
+      io.emit("room-creted", result);
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   socket.on("join", ({ name, room_id, user_id }) => {
