@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import ErrorResponse from "../utils/errorResponse.js";
+import bcrypt from "bcrypt";
+import isEmail from "validator/lib/isEmail.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -11,6 +12,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       lowercase: true,
+      validate: [isEmail, "email tidak valid"],
     },
     password: {
       type: String,
@@ -24,6 +26,17 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.index({ email: 1, name: 1 }, { unique: true });
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+
+  next();
+});
 
 userSchema.post("save", function (error, doc, next) {
   let isError = false;
