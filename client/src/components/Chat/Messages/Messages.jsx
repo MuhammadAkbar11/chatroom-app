@@ -4,10 +4,10 @@ import Message from "./Message";
 
 const Messages = ({ messages, userId }) => {
   return (
-    <ScrollToBottom className="messages p-3">
+    <ScrollToBottom debug={false} className="messages p-3">
       {messages.map(msg => {
         const key = msg._id;
-        return <Message key={key} message={msg} userId={userId} />;
+        return <Message key={key} message={msg} currentUserId={userId} />;
       })}
     </ScrollToBottom>
   );

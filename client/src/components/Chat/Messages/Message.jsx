@@ -1,14 +1,12 @@
 import React from "react";
 
-const Message = ({ message: { name, user_id, text }, userId }) => {
+const Message = ({ message: { name, user_id, text }, currentUserId }) => {
   let isSentByCurrentUser = false;
   const trimmedName = name.trim();
-  console.log(typeof user_id, typeof userId);
-  if (+user_id === +userId) {
+  if (+user_id === +currentUserId) {
     console.log("okk");
     isSentByCurrentUser = true;
   }
-  console.log(isSentByCurrentUser);
   return isSentByCurrentUser ? (
     <div className=" d-flex mt-1 py-2 mr-2 justify-content-end message-container current-user  ">
       <div className="message-box  p-2 px-3  rounded ">

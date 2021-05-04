@@ -16,12 +16,16 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
+import authRoutes from "./routes/authRoutes.js";
+
 app.get("/api", (req, res) => {
   res.status(200).json({
     status: true,
     message: "welcome to Bae Chatroom API",
   });
 });
+
+app.use("/api/auth", authRoutes);
 
 const io = new SocketServer(server, {
   cors: true,
@@ -30,6 +34,18 @@ const io = new SocketServer(server, {
 
 io.on("connection", socket => {
   console.log("a user connected", socket.id);
+
+  // socket.on("load-room-messages", ({ room_id }, callback) => {
+  //   MessageModel.find({
+  //     room_id,
+  //   })
+  //     .then(msgs => {
+  //       callback && callback(msgs);
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // });
 
   RoomModel.find()
     .then(result => {

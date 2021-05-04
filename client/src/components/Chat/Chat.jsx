@@ -31,14 +31,22 @@ const Chat = ({ history }) => {
     return () => {
       socket.on("disconnect");
       socket.off();
+      setMessages([]);
+      setMessage("");
     };
   }, [ENDPOINT, user]);
+
+  // useEffect(() => {
+  //   socket.emit("load-room-messages", { room_id }, msgs => {
+  //     setMessages(msgs);
+  //   });
+  // }, [room_id]);
 
   useEffect(() => {
     socket.on("message", msg => {
       setMessages(prevState => [...prevState, msg]);
     });
-  }, [ENDPOINT]);
+  }, []);
 
   const sendMessage = event => {
     event.preventDefault();
@@ -48,6 +56,8 @@ const Chat = ({ history }) => {
       socket.emit("send-message", { message, room_id }, () => setMessage(""));
     }
   };
+
+  console.log(messages);
 
   return (
     <Template fixed>
