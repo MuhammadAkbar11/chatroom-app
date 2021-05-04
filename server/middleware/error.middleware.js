@@ -1,7 +1,12 @@
 const errorHandlerMiddleware = (err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  const statusCode = err.statusCode
+    ? err.statusCode
+    : res.statusCode === 200
+    ? 500
+    : res.statusCode;
 
   const isErrorsEmpty = obj => {
+    if (obj === undefined) return true;
     return Object.keys(obj).length === 0;
   };
 
@@ -16,7 +21,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   if (!err.stack) {
     delete resErrorData.stack;
   }
-
+  // console.log(err.errors);
   if (isErrorsEmpty(err.errors)) {
     delete resErrorData.errors;
   }
