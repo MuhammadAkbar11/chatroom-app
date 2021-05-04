@@ -16,7 +16,14 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
+const io = new SocketServer(server, {
+  cors: true,
+  origins: ["http://localhost:3000"],
+});
+
 import authRoutes from "./routes/authRoutes.js";
+
+app.use(express.json());
 
 app.get("/api", (req, res) => {
   res.status(200).json({
@@ -26,11 +33,6 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-
-const io = new SocketServer(server, {
-  cors: true,
-  origins: ["http://localhost:3000"],
-});
 
 io.on("connection", socket => {
   console.log("a user connected", socket.id);
