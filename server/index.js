@@ -4,6 +4,7 @@ import http from "http";
 import { Server as SocketServer } from "socket.io";
 import connectDB from "./configs/database.js";
 import { addUser, removeUser, getUser } from "./helper.js";
+import { errorHandlerMiddleware } from "./middleware/error.middleware.js";
 import MessageModel from "./models/Message.js";
 import RoomModel from "./models/Room.js";
 
@@ -33,6 +34,7 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use(errorHandlerMiddleware);
 
 io.on("connection", socket => {
   console.log("a user connected", socket.id);
