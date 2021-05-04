@@ -1,22 +1,51 @@
 .chat-container {
-  height: 100%;
   width: 100%;
+  height: max-content;
+  .row {
+    height: 85vh;
+    border: 1px solid;
+  }
 }
 
 .chat {
   &-box {
     background-color: lighten($body-bg, $amount: 3);
-
+    flex: 1;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
+    & .messages {
+      padding: 5% 0;
+      overflow: auto;
+      flex: auto;
+    }
+
     & .message-container {
-      flex: 1;
+      & .message-from {
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.3px;
+      }
+
+      & .message-box {
+        background-color: $body-bg;
+        min-width: 20%;
+        text-align: left;
+        max-width: 80%;
+      }
+
+      &.current-user {
+        .message-box {
+          background-color: darken($primary, $amount: 0);
+        }
+      }
     }
   }
 
   &-form {
+    height: 10%;
     display: flex;
     background-color: lighten($body-bg, $amount: 6);
     justify-content: center;

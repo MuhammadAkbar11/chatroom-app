@@ -36,7 +36,12 @@ const Home = () => {
 
   useEffect(() => {
     socket = io(ENDPT);
-
+    setUser({
+      id: 3,
+      name: "dubu",
+      email: "dubu.1998@gmail.com",
+      password: "1234",
+    });
     return () => {
       socket.on("disconnect");
       socket.off();

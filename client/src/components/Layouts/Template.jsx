@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 
 const Template = ({ fixed, children, footer }) => {
-  const fixedClass = fixed ? "h-100vh overflow-hidden " : "min-h-100vh";
+  const fixedClass = fixed ? "h-100vh " : "min-h-100vh";
   return (
     <div className={`wrapper ${fixedClass}  `}>
       <Header />
