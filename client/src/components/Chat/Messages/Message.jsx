@@ -4,7 +4,6 @@ const Message = ({ message: { name, user_id, text }, currentUserId }) => {
   let isSentByCurrentUser = false;
   const trimmedName = name.trim();
   if (+user_id === +currentUserId) {
-    console.log("okk");
     isSentByCurrentUser = true;
   }
   return isSentByCurrentUser ? (

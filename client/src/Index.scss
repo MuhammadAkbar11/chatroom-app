@@ -1,8 +1,9 @@
+$body-bg: #202020;
 $theme-colors: (
   "primary": #00e0ff,
+  "danger": #e44e6e,
+  "body-bg": $body-bg,
 );
-
-$body-bg: #202020;
 
 @import "~bootswatch/dist/cyborg/variables";
 @import "~bootstrap/scss/bootstrap";
@@ -41,6 +42,8 @@ $body-bg: #202020;
 .h-100vh {
   height: 100vh;
 }
+
+@import "./styles/input";
 
 @import "./styles/home";
 @import "./styles/chat";

@@ -7,7 +7,7 @@ const Header = () => {
     <header className="header">
       <Navbar className="py-4" variant="dark" expand="lg" collapseOnSelect>
         <Container fluid>
-          <LinkContainer to="/" className="border">
+          <LinkContainer to="/">
             <Navbar.Brand>
               {" "}
               <span className="text-primary text-uppercase">

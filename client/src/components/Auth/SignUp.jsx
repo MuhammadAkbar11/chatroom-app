@@ -5,6 +5,7 @@ import Template from "../Layouts/Template";
 import BaeFormControl from "../UI/BaeFormControl";
 
 const SignUp = () => {
+  const [errors, setErrors] = React.useState({});
   const [values, setValues] = React.useState({
     name: "",
     email: "",
@@ -19,11 +20,20 @@ const SignUp = () => {
       ...preVal,
       [elId]: elValue,
     }));
+
+    setErrors(prevErr => ({
+      ...prevErr,
+      [elId]: null,
+    }));
   };
 
   const submitSignUp = event => {
     event.preventDefault();
-
+    setErrors({
+      name: "nama harus isi",
+      email: "email harus di isi",
+      password: "password harus di isi",
+    });
     console.log(values);
   };
 
@@ -43,7 +53,11 @@ const SignUp = () => {
                       placeholder="Enter username"
                       onChange={onChangeHandler}
                       value={values.name}
+                      isInvalid={errors.name}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name && errors.name}
+                    </Form.Control.Feedback>
                   </Form.Group>
 
                   <Form.Group controlId="email">
@@ -53,7 +67,11 @@ const SignUp = () => {
                       placeholder="Enter email"
                       onChange={onChangeHandler}
                       value={values.email}
+                      isInvalid={errors.email}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.email && errors.email}
+                    </Form.Control.Feedback>
                   </Form.Group>
 
                   <Form.Group controlId="password">
@@ -63,7 +81,11 @@ const SignUp = () => {
                       placeholder="Password"
                       onChange={onChangeHandler}
                       value={values.password}
+                      isInvalid={errors.password}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.password && errors.password}
+                    </Form.Control.Feedback>
                   </Form.Group>
 
                   <Form.Group className="mt-5 text-center">
