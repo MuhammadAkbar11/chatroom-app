@@ -1,0 +1,7 @@
+.bae-form-control {
+  &::placeholder {
+    opacity: 0.7;
+    color: currentColor;
+    font-size: 16px;
+  }
+}
