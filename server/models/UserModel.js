@@ -6,11 +6,11 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "masukan nama anda"],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "masukan email anda"],
       lowercase: true,
       validate: [isEmail, "email tidak valid"],
     },
@@ -42,7 +42,7 @@ userSchema.post("save", function (error, doc, next) {
   let isError = false;
   const errorObj = new Error();
   if (
-    error.keyValue.email &&
+    error.keyValue?.email &&
     error.keyValue.email != null &&
     error.name === "MongoError" &&
     error.code === 11000
@@ -54,13 +54,14 @@ userSchema.post("save", function (error, doc, next) {
       email: {
         name: "ValidatorError",
         message: "email sudah tersedia",
+        properties: { message: "email sudah tersedia", path: "email" },
       },
     };
     isError = true;
   }
 
   if (
-    error.keyValue.name &&
+    error.keyValue?.name &&
     error.keyValue.name != null &&
     error.name === "MongoError" &&
     error.code === 11000
@@ -73,6 +74,7 @@ userSchema.post("save", function (error, doc, next) {
       name: {
         name: "ValidatorError",
         message: "nama sudah tersedia",
+        properties: { message: "Nama sudah tersedia", path: "name" },
       },
     };
     isError = true;

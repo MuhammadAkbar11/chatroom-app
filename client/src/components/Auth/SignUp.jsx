@@ -1,11 +1,26 @@
 import React from "react";
-import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Alert,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Template from "../Layouts/Template";
 import BaeFormControl from "../UI/BaeFormControl";
+import axios from "axios";
 
-const SignUp = () => {
-  const [errors, setErrors] = React.useState({});
+const SignUp = ({ history }) => {
+  const [loading, setLoading] = React.useState(false);
+  const [alert, setAlert] = React.useState({
+    show: false,
+    variant: "danger",
+    message: "",
+  });
+  const [formError, setFormError] = React.useState({});
   const [values, setValues] = React.useState({
     name: "",
     email: "",
@@ -21,20 +36,43 @@ const SignUp = () => {
       [elId]: elValue,
     }));
 
-    setErrors(prevErr => ({
+    setFormError(prevErr => ({
       ...prevErr,
       [elId]: null,
     }));
   };
 
-  const submitSignUp = event => {
+  const submitSignUp = async event => {
     event.preventDefault();
-    setErrors({
-      name: "nama harus isi",
-      email: "email harus di isi",
-      password: "password harus di isi",
-    });
-    console.log(values);
+    setLoading(true);
+    try {
+      const result = await axios.post("/api/auth/signup", { ...values });
+
+      setLoading(false);
+      history.push("/");
+    } catch (error) {
+      const { errors } = error.response.data;
+      setLoading(false);
+      if (error.response && error.response.data && !errors.validation) {
+        setAlert({
+          show: true,
+          variant: "danger",
+          message: "Signup failed",
+        });
+
+        return;
+      }
+
+      if (error.response && errors && errors.validation) {
+        let errorObj = {};
+        Object.values(errors.validation).map(x => {
+          const properties = x.properties;
+          errorObj[properties.path] = properties.message;
+        });
+        setFormError(errorObj);
+        return;
+      }
+    }
   };
 
   return (
@@ -44,6 +82,15 @@ const SignUp = () => {
           <Col md={6} lg={5} className="mx-auto my-auto">
             <Card className="p-md-3">
               <Card.Body>
+                {alert.show && (
+                  <Alert
+                    variant={alert.variant}
+                    onClose={() => setAlert(prev => ({ ...prev, show: false }))}
+                    dismissible
+                  >
+                    {alert.message}
+                  </Alert>
+                )}
                 <h5 className="mb-3 text-center">Sign up</h5>
                 <Form onSubmit={submitSignUp} noValidate>
                   <Form.Group controlId="name">
@@ -53,10 +100,10 @@ const SignUp = () => {
                       placeholder="Enter username"
                       onChange={onChangeHandler}
                       value={values.name}
-                      isInvalid={errors.name}
+                      isInvalid={formError.name}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {errors.name && errors.name}
+                      {formError.name && formError.name}
                     </Form.Control.Feedback>
                   </Form.Group>
 
@@ -67,10 +114,10 @@ const SignUp = () => {
                       placeholder="Enter email"
                       onChange={onChangeHandler}
                       value={values.email}
-                      isInvalid={errors.email}
+                      isInvalid={formError.email}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {errors.email && errors.email}
+                      {formError.email && formError.email}
                     </Form.Control.Feedback>
                   </Form.Group>
 
@@ -81,10 +128,10 @@ const SignUp = () => {
                       placeholder="Password"
                       onChange={onChangeHandler}
                       value={values.password}
-                      isInvalid={errors.password}
+                      isInvalid={formError.password}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {errors.password && errors.password}
+                      {formError.password && formError.password}
                     </Form.Control.Feedback>
                   </Form.Group>
 
@@ -95,8 +142,9 @@ const SignUp = () => {
                       variant="primary"
                       type="submit"
                       block
+                      disabled={loading}
                     >
-                      Sign up
+                      {loading ? "proccessing..." : "Sing up "}
                     </Button>
                     <div className="mt-3">
                       Forgot your password?{" "}
