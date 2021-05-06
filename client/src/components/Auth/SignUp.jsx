@@ -11,21 +11,20 @@ import {
 import { Link } from "react-router-dom";
 import Template from "../Layouts/Template";
 import BaeFormControl from "../UI/BaeFormControl";
-import axios from "axios";
+import { useAuth, useAuthDispatch } from "../../context/auth/auth.context";
 
 const SignUp = ({ history }) => {
   const [loading, setLoading] = React.useState(false);
-  const [alert, setAlert] = React.useState({
-    show: false,
-    variant: "danger",
-    message: "",
-  });
+
   const [formError, setFormError] = React.useState({});
   const [values, setValues] = React.useState({
     name: "",
     email: "",
     password: "",
   });
+
+  const { currentUser, authSignUp } = useAuth();
+  const { onSignUp, onResetSingUpError } = useAuthDispatch();
 
   const onChangeHandler = e => {
     const elId = e.target.id;
@@ -42,37 +41,27 @@ const SignUp = ({ history }) => {
     }));
   };
 
+  React.useEffect(() => {
+    if (currentUser) {
+      history.push("/");
+    }
+  }, [currentUser]);
+
+  React.useEffect(() => {
+    if (authSignUp.errors && authSignUp.errors.validation) {
+      setFormError(authSignUp.errors.validation);
+    } else {
+      setFormError({});
+    }
+  }, [authSignUp]);
+
+  React.useEffect(() => {
+    return onResetSingUpError();
+  }, []);
+
   const submitSignUp = async event => {
     event.preventDefault();
-    setLoading(true);
-    try {
-      const result = await axios.post("/api/auth/signup", { ...values });
-
-      setLoading(false);
-      history.push("/");
-    } catch (error) {
-      const { errors } = error.response.data;
-      setLoading(false);
-      if (error.response && error.response.data && !errors.validation) {
-        setAlert({
-          show: true,
-          variant: "danger",
-          message: "Signup failed",
-        });
-
-        return;
-      }
-
-      if (error.response && errors && errors.validation) {
-        let errorObj = {};
-        Object.values(errors.validation).map(x => {
-          const properties = x.properties;
-          errorObj[properties.path] = properties.message;
-        });
-        setFormError(errorObj);
-        return;
-      }
-    }
+    onSignUp(values);
   };
 
   return (
@@ -82,13 +71,13 @@ const SignUp = ({ history }) => {
           <Col md={6} lg={5} className="mx-auto my-auto">
             <Card className="p-md-3">
               <Card.Body>
-                {alert.show && (
+                {authSignUp.errors?.message && (
                   <Alert
-                    variant={alert.variant}
-                    onClose={() => setAlert(prev => ({ ...prev, show: false }))}
-                    dismissible
+                    variant="danger"
+                    // onClose={() => setAlert(prev => ({ ...prev, show: false }))}
+                    // dismissible
                   >
-                    {alert.message}
+                    {authSignUp.errors.message}
                   </Alert>
                 )}
                 <h5 className="mb-3 text-center">Sign up</h5>
@@ -142,9 +131,9 @@ const SignUp = ({ history }) => {
                       variant="primary"
                       type="submit"
                       block
-                      disabled={loading}
+                      disabled={authSignUp.loading}
                     >
-                      {loading ? "proccessing..." : "Sing up "}
+                      {authSignUp.loading ? "proccessing..." : "Sing up "}
                     </Button>
                     <div className="mt-3">
                       Forgot your password?{" "}
