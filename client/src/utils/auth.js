@@ -9,7 +9,9 @@ export const setLogout = () => {
 };
 
 export const isLogin = () => {
-  if (localStorage.getItem(TOKEN_KEY)) {
+  const userInfo = localStorage.getItem(TOKEN_KEY);
+
+  if (userInfo && userInfo !== undefined) {
     return true;
   }
 

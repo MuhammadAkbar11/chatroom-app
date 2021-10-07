@@ -13,27 +13,36 @@ import Template from "../Layouts/Template";
 import BaeFormControl from "../UI/BaeFormControl";
 import { useDispatch, useSelector } from "../../hooks";
 import {
-  signUpAction,
-  resetSignUpErrorAction,
+  loginAction,
+  resetLoginErrorAction,
 } from "../../context/auth/auth.actions";
 
-const SignUp = ({ history }) => {
-  const [formError, setFormError] = React.useState({});
-  const [alert, setAlert] = React.useState({
-    show: false,
-    variant: "success",
-    message: "",
-  });
+const Login = ({ history }) => {
   const [values, setValues] = React.useState({
-    name: "",
     email: "",
     password: "",
   });
 
-  const { authState } = useSelector();
   const dispatch = useDispatch();
+  const { authState } = useSelector();
 
-  const signUp = authState.signup;
+  const loginState = authState.login;
+
+  const [formError, setFormError] = React.useState({});
+
+  React.useEffect(() => {
+    if (loginState.errors && loginState.errors.validation) {
+      setFormError(loginState.errors.validation);
+    } else {
+      setFormError({});
+    }
+  }, [loginState]);
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(resetLoginErrorAction());
+    };
+  }, []);
 
   const onChangeHandler = e => {
     const elId = e.target.id;
@@ -50,77 +59,27 @@ const SignUp = ({ history }) => {
     }));
   };
 
-  React.useEffect(() => {
-    if (signUp.errors && signUp.errors.validation) {
-      setFormError(signUp.errors.validation);
-    } else {
-      setFormError({});
-    }
-  }, [signUp]);
-
-  React.useEffect(() => {
-    return dispatch(resetSignUpErrorAction());
-  }, []);
-
-  const submitSignUp = async event => {
+  const submitLogin = event => {
     event.preventDefault();
-    // onSignUp(values);
-    dispatch(signUpAction(values)).then(res => {
-      console.log(res, "nicee");
-      if (res === true) {
-        setAlert({
-          show: true,
-          variant: "success",
-          message: "Registrasi berhasil silahkan login!",
-        });
-        setValues({
-          name: "",
-          email: "",
-          password: "",
-        });
-      }
+    dispatch(loginAction(values)).then(res => {
+      if (res) history.push("/");
     });
   };
 
-  console.log(signUp);
-
   return (
-    <Template footer>
+    <Template fixed footer>
       <Container fluid className="h-100 ">
         <Row className=" h-100 align-items-center  ">
           <Col md={6} lg={5} className="mx-auto my-auto">
             <Card className="p-md-3">
               <Card.Body>
-                {signUp.errors?.message && (
-                  <Alert variant="danger">{signUp.errors.message}</Alert>
-                )}
-                {alert.show && (
-                  <Alert
-                    variant={alert.variant}
-                    onClose={() =>
-                      setAlert({ show: false, message: "", variant: "success" })
-                    }
-                    dismissible
-                  >
-                    <p>{alert.message}</p>
+                {loginState.errors?.message && (
+                  <Alert variant="danger" className="text-center">
+                    {loginState.errors.message}
                   </Alert>
                 )}
-                <h5 className="mb-3 text-center">Sign up</h5>
-                <Form onSubmit={submitSignUp} noValidate>
-                  <Form.Group controlId="name">
-                    <Form.Label>Username</Form.Label>
-                    <BaeFormControl
-                      type="text"
-                      placeholder="Enter username"
-                      onChange={onChangeHandler}
-                      value={values.name}
-                      isInvalid={formError.name}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {formError.name && formError.name}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
+                <h5 className="mb-3 text-center">Login</h5>
+                <Form onSubmit={submitLogin} noValidate>
                   <Form.Group controlId="email">
                     <Form.Label>Email address</Form.Label>
                     <BaeFormControl
@@ -156,16 +115,20 @@ const SignUp = ({ history }) => {
                       variant="primary"
                       type="submit"
                       block
-                      disabled={signUp.loading}
+                      disabled={loginState.loading}
                     >
-                      {signUp.loading ? "proccessing..." : "Sing up "}
+                      {loginState.loading ? "processing..." : "Login"}
                     </Button>
+                    <div className="mt-3">
+                      Forgot your password?{" "}
+                      <Link to="forgot-password">Click here</Link>
+                    </div>
                   </Form.Group>
                 </Form>
               </Card.Body>
             </Card>
             <div className="mt-3 text-center">
-              Have an account? <Link to="login">login now</Link>
+              Don't have an account? <Link to="signup">Sign up here</Link>
             </div>
           </Col>
         </Row>
@@ -174,4 +137,4 @@ const SignUp = ({ history }) => {
   );
 };
 
-export default SignUp;
+export default Login;
