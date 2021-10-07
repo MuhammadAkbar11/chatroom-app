@@ -57,8 +57,12 @@ io.on("connection", socket => {
     })
     .catch(err => console.log(err));
 
-  socket.on("create-room", newRoom => {
-    const room = new RoomModel({ name: newRoom });
+  socket.on("create-room", data => {
+    const room = new RoomModel({
+      name: data.room,
+      admin: [data.user_id],
+      creator: data.user_id,
+    });
     return room
       .save()
       .then(result => {

@@ -5,6 +5,13 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  admin: {
+    type: [String],
+  },
+  creator: {
+    type: String,
+    required: true,
+  },
 });
 
 const RoomModel = mongoose.model("RoomModel", roomSchema, "rooms");
