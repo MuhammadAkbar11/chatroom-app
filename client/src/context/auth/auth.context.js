@@ -1,100 +1,32 @@
-import React from "react";
-import axios from "axios";
+import { useReducer } from "react";
 import {
-  AUTH_RESET_SINGUP_ERROR,
-  AUTH_SIGNUP_FAIL,
-  AUTH_SIGNUP_REQ,
-  AUTH_SIGNUP_SUCCESS,
-} from "../../constants/auth.constants";
-import { authSignUpReducer } from "./auth.reducer";
-import { setLogin } from "../../utils/auth";
+  authLoginReducer,
+  authSignUpReducer,
+  authUserReducer,
+} from "./auth.reducer";
 
-const AuthContext = React.createContext();
-const AuthDispatchContext = React.createContext();
-
-const userInfoFromStorage = localStorage.getItem("chatroom_user")
-  ? JSON.parse(localStorage.getItem("chatroom_user"))
+const userInfoFromStorage = localStorage.getItem("bae-chatroom-userinfo")
+  ? JSON.parse(localStorage.getItem("bae-chatroom-userinfo"))
   : null;
 
-const AuthProvider = ({ children }) => {
-  const initState = {
-    user: userInfoFromStorage,
-    singup: { loading: false },
-    login: { loading: false },
-  };
+const initState = {
+  user: userInfoFromStorage,
+  singup: { loading: false },
+  login: { loading: false },
+};
 
-  const [currentUser, setCurrentUser] = React.useState(initState.user);
-  const [signupState, signupDispatch] = React.useReducer(
+export const useAuthState = () => {
+  const [user, userDispatch] = useReducer(authUserReducer, initState.user);
+  const [signUpState, signUpDispatch] = useReducer(
     authSignUpReducer,
     initState.singup
   );
-
-  React.useEffect(() => {
-    return () => {
-      signupDispatch({ type: AUTH_RESET_SINGUP_ERROR });
-    };
-  }, []);
-
-  const handleSignup = async data => {
-    signupDispatch({ type: AUTH_SIGNUP_REQ });
-    console.log(data, "<== values");
-    try {
-      const result = await axios.post("/api/auth/signup", { ...data });
-      const { user } = result.data;
-      setLogin(JSON.stringify(user));
-      setCurrentUser(user);
-      signupDispatch({ type: AUTH_SIGNUP_SUCCESS });
-    } catch (error) {
-      let singupErr = {};
-      if (error.response && error.response.data) {
-        const { errors } = error.response.data;
-
-        singupErr = {
-          message: "failed",
-        };
-
-        if (errors?.validation) {
-          let errorObj = {};
-
-          Object.values(errors.validation).map(x => {
-            const properties = x.properties;
-            errorObj[properties.path] = properties.message;
-          });
-          singupErr.message = null;
-          singupErr.validation = errorObj;
-        }
-      }
-
-      signupDispatch({ type: AUTH_SIGNUP_FAIL, payload: singupErr });
-    }
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        currentUser,
-        authSignUp: signupState,
-      }}
-    >
-      <AuthDispatchContext.Provider
-        value={{
-          onSignUp: handleSignup,
-          onResetSingUpError: () => {
-            return signupDispatch({ type: AUTH_RESET_SINGUP_ERROR });
-          },
-        }}
-      >
-        {children}
-      </AuthDispatchContext.Provider>
-    </AuthContext.Provider>
+  const [loginState, loginDispatch] = useReducer(
+    authLoginReducer,
+    initState.login
   );
-};
 
-export const useAuth = () => {
-  return React.useContext(AuthContext);
+  const state = { user, signup: signUpState, login: loginState };
+  const dispatch = { signUpDispatch, userDispatch, loginDispatch };
+  return [state, dispatch];
 };
-
-export const useAuthDispatch = () => {
-  return React.useContext(AuthDispatchContext);
-};
-export default AuthProvider;
